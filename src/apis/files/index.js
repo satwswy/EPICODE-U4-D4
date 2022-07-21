@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import { extname } from "path";
-import { saveBlogPostsCovers } from "../../lib/fs-tools";
+import { saveBlogPostsCovers } from "../../lib/fs-tools.js";
 
 const filesRouter = express.Router();
 
@@ -11,7 +11,9 @@ filesRouter.post(
   async (req, res, next) => {
     try {
       console.log("File: ", req.file);
-      const fileName = extname(req.file.buffer);
+      
+      const fileName = req.file.originalname + extname(req.file.originalname);
+      console.log(fileName)
       res.send("uploaded");
     } catch (error) {
       next(error);
@@ -35,3 +37,5 @@ filesRouter.post(
     }
   }
 );
+
+export default filesRouter

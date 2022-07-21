@@ -1,7 +1,7 @@
 import express from "express";
 import uniqid from "uniqid";
 import createHttpError from "http-errors";
-import { getBlogPosts, writeBlogPosts } from "../../lib/fs-tools";
+import { getBlogPosts, writeBlogPosts } from "../../lib/fs-tools.js";
 
 const blogPostsRouter = express.Router();
 
