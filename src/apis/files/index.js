@@ -6,7 +6,7 @@ import { saveBlogPostsCovers } from "../../lib/fs-tools";
 const filesRouter = express.Router();
 
 filesRouter.post(
-  "/single",
+  "/singleCover/:id",
   multer({}).single("cover"),
   async (req, res, next) => {
     try {
@@ -20,7 +20,7 @@ filesRouter.post(
 );
 
 filesRouter.post(
-  "/multiple",
+  "/multipleCover/:id",
   multer().array("covers"),
   async (req, res, next) => {
     try {
