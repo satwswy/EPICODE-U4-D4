@@ -22,7 +22,7 @@ const publicDirectory = path.join(__dirname, "../public");
 
 const server = express();
 
-const port = process.env.PORT || 3001
+const port = process.env.PORT || 3005
 
 const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL]
 
