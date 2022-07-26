@@ -1,58 +1,28 @@
-import express from "express";
+import express from "express"
+import blogPostsRouter from "./apis/blogs/index.js"
+import listEndpoints from "express-list-endpoints"
+import { badRequestHandler, genericServerErrorHandler, notFoundHandler, unauthorizedHandler } from "./errorHandlers.js"
+import filesRouter from "./apis/files/index.js"
+import {join} from "path"
+import cors from "cors"
 
-import cors from "cors";
+const server = express()
 
-import listEndpoints from "express-list-endpoints";
+const port = 3002
+const publicFolderPath = join(process.cwd(), "./public")
+server.use(express.static(publicFolderPath))
+server.use(cors())
+server.use(express.json())
 
-import authorsRouter from "./authors/index.js";
+server.use("/blogPosts",blogPostsRouter )
+server.use("/files", filesRouter)
 
-import blogsRouter from "./blogs/index.js";
+server.use(badRequestHandler)
+server.use(unauthorizedHandler)
+server.use(notFoundHandler)
+server.use(genericServerErrorHandler)
 
-import { notFound, forbidden, catchAllErrorHandler } from "./errorHandlers.js";
-
-import path, { dirname } from "path";
-
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-
-const __dirname = dirname(__filename);
-
-const publicDirectory = path.join(__dirname, "../public");
-
-const server = express();
-
-const port = process.env.PORT || 3005
-
-const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL]
-
-server.use(cors({origin: (origin, corsNext) => {
-  console.log("ORIGIN: ", origin)
-if (!origin || whitelist.indexOf(origin)!== -1) {
-  corsNext(null, true)
-} else {
-  corsNext(createHttpError(400, `Cors Error! Your origin${origin} is not in the list`))
-}
-}}));
-
-server.use(express.json());
-
-server.use(express.static(publicDirectory));
-
-server.use("/authors", authorsRouter);
-
-server.use("/blogs", blogsRouter);
-
-server.use(notFound);
-
-server.use(forbidden);
-
-server.use(catchAllErrorHandler);
-
-console.log(listEndpoints(server));
-
-server.listen(port, () => console.log("✅ Server is running on port : ", port));
-
-server.on("error", (error) =>
-  console.log(`❌ Server is not running due to : ${error}`)
-);
+server.listen(port, ()=> {
+console.table(listEndpoints(server))
+console.log("Server is running on port:", port)
+})
